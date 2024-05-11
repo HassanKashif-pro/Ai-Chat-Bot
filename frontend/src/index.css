@@ -11,6 +11,7 @@ html,body{
 .image-inverted{
   filter: invert(100%);
 }
+
 .nav-link{
   font-weight: 600;
   text-transform: uppercase;
@@ -20,4 +21,9 @@ html,body{
   border-radius: 10px;
   text-decoration: none;
   letter-spacing: 1px;
+}
+
+.MuiOutlinedInput-input-root.Mui-Focused,
+.MuiOutlinedInput-notchedOutline{
+  border-color: white !important;
 }
