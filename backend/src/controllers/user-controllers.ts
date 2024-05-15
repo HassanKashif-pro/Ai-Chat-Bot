@@ -26,7 +26,6 @@ export const userSignup = async (
   next: NextFunction
 ) => {
   try {
-    // user signup
     const { name, email, password } = req.body;
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(401).send("User Already Registered");
@@ -34,27 +33,19 @@ export const userSignup = async (
     const user = new User({ name, email, password: hashedPassword });
     await user.save();
 
-    // create token and store cookie
+    res.clearCookie(COOKIE_NAME);
 
-    res.clearCookie(COOKIE_NAME, {
-      path: "/",
-      domain: "localhost",
-      httpOnly: true,
-      signed: true,
-    });
-
-    const token = createToken(user._id.toString(), user.email, "7d");
+    const token = createToken(user._id.toString(), user.email, 7);
     const expires = new Date();
     expires.setDate(expires.getDate() + 7);
     res.cookie(COOKIE_NAME, token, {
-      path: "/",
-      domain: "localhost",
       expires,
       httpOnly: true,
-      signed: true,
     });
 
-    return res.status(201).json({ message: "OK", id: user._id.toString() });
+    return res
+      .status(201)
+      .json({ message: "OK", name: user.name, email: user.email });
   } catch (error) {
     console.error(error);
     return res
@@ -69,7 +60,6 @@ export const userLogin = async (
   next: NextFunction
 ) => {
   try {
-    // user login
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
@@ -80,22 +70,14 @@ export const userLogin = async (
       return res.status(403).send("Incorrect Password");
     }
 
-    res.clearCookie(COOKIE_NAME, {
-      path: "/",
-      domain: "localhost",
-      httpOnly: true,
-      signed: true,
-    });
+    res.clearCookie(COOKIE_NAME);
 
-    const token = createToken(user._id.toString(), user.email, "7d");
+    const token = createToken(user._id.toString(), user.email, 7);
     const expires = new Date();
     expires.setDate(expires.getDate() + 7);
     res.cookie(COOKIE_NAME, token, {
-      path: "/",
-      domain: "localhost",
       expires,
       httpOnly: true,
-      signed: true,
     });
 
     return res
