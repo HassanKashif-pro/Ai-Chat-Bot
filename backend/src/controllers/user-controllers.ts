@@ -90,3 +90,29 @@ export const userLogin = async (
       .json({ message: "Internal Server Error", cause: error.message });
   }
 };
+
+export const verifyUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    //user login
+    const user = await User.findById(res.locals.jwtData.email);
+    if (!user) {
+      return res.status(401).send("User not registered OR Token malfunctioned");
+    }
+    console.log(user._id.toString(), res.locals.jwtData.id);
+    if (user._id.toString() !== res.locals.jwtData.id) {
+      return res.status(401).send("The Permissions Didn't Match");
+    }
+    return res
+      .status(200)
+      .json({ message: "OK", name: user.name, email: user.email });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", cause: error.message });
+  }
+};

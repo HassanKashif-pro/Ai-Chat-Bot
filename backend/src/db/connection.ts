@@ -1,24 +1,25 @@
 import { connect, disconnect } from "mongoose";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 async function connectToDatabase() {
   try {
-    const url = process.env.MONGODB_URL;
-    if (!url) {
-      throw new Error("MONGODB_URL is not defined");
-    }
-    await connect(url);
+    await connect(process.env.MONGODB_URL);
+    console.log("Successfully connected to MongoDB");
   } catch (error) {
-    console.log(error);
-    throw new Error("Cannot Connect To MongoDB");
+    console.error("Error connecting to MongoDB:", error.message);
+    throw new Error("Could not connect to MongoDB");
   }
 }
 
 async function disconnectFromDatabase() {
   try {
     await disconnect();
+    console.log("Successfully disconnected from MongoDB");
   } catch (error) {
-    console.log(error);
-    throw new Error("Cannot Disconnect From MongoDB");
+    console.error("Error disconnecting from MongoDB:", error.message);
+    throw new Error("Could not disconnect from MongoDB");
   }
 }
 
