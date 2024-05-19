@@ -35,7 +35,7 @@ export const userSignup = async (
 
     res.clearCookie(COOKIE_NAME);
 
-    const token = createToken(user._id.toString(), user.email, 7);
+    const token = createToken(user._id.toString(), user.email, "7d");
     const expires = new Date();
     expires.setDate(expires.getDate() + 7);
     res.cookie(COOKIE_NAME, token, {
@@ -72,7 +72,7 @@ export const userLogin = async (
 
     res.clearCookie(COOKIE_NAME);
 
-    const token = createToken(user._id.toString(), user.email, 7);
+    const token = createToken(user._id.toString(), user.email, "7d");
     const expires = new Date();
     expires.setDate(expires.getDate() + 7);
     res.cookie(COOKIE_NAME, token, {

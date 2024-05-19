@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response } from "express";
+import User from "../models/User.js";
+import { configureOpenAI } from "../config/openai-config.js";
 import { ChatCompletionRequestMessage, OpenAIApi } from "openai";
-import User from "./models/User.js";
-import { configureOpenAI } from "./config/openai-config.js";
 
 export const generateChatCompletion = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
+  const { message } = req.body;
   try {
-    const { message } = req.body;
     const user = await User.findById(res.locals.jwtData.id);
     if (!user) {
       return res
@@ -36,6 +36,6 @@ export const generateChatCompletion = async (
     return res.status(200).json({ chats: user.chats });
   } catch (error) {
     console.error("Error generating chat completion:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Something went wrong" });
   }
 };
