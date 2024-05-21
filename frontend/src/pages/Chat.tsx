@@ -2,59 +2,23 @@ import { Avatar, Box, Button, IconButton, Typography } from "@mui/material";
 import { red } from "@mui/material/colors";
 import { useAuth } from "../context/AuthContext";
 import { IoMdSend } from "react-icons/io";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
-type UserRole = "user" | "assistant";
-
-const chatMessages: { role: UserRole; content: string }[] = [
-  {
-    role: "user",
-    content: "Hi, can you tell me about the weather today?",
-  },
-  {
-    role: "assistant",
-    content: "Sure, today's weather is sunny with a high of 25°C.",
-  },
-  {
-    role: "user",
-    content: "Thank you! Can you also remind me to call my friend at 5 PM?",
-  },
-  {
-    role: "assistant",
-    content: "Absolutely, I will remind you to call your friend at 5 PM.",
-  },
-];
-
-const ChatItem = ({ content, role }: { content: string; role: UserRole }) => {
-  return role === "assistant" ? (
-    <Box sx={{ display: "flex", p: 2, bgcolor: "#004d5612", my: 2, gap: 2 }}>
-      <Avatar sx={{ ml: "0" }}>
-        <img src="openai.png" alt="openai" width={"30px"} />
-      </Avatar>
-      <Box>
-        <Typography sx={{ fontSize: "20px" }}>{content}</Typography>
-      </Box>
-    </Box>
-  ) : (
-    <Box sx={{ display: "flex", p: 2, bgcolor: "#e0f7fa", my: 2, gap: 2 }}>
-      <Avatar sx={{ ml: "0", bgcolor: "primary.main" }}>U</Avatar>
-      <Box>
-        <Typography sx={{ fontSize: "20px" }}>{content}</Typography>
-      </Box>
-    </Box>
-  );
+type Message = {
+  role: "user" | "assistant";
+  content: string;
 };
-
 const Chat = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const auth = useAuth();
-
+  const [chatMessages, setChatMessages] = useState<Message[]>([]);
   const handleSubmit = async () => {
     const content = inputRef.current?.value as string;
     if (inputRef && inputRef.current) {
       inputRef.current.value = "";
     }
-    console.log(content);
+    const newMessage: Message = { role: "user", content };
+    setChatMessages((prev) => [...prev, newMessage]);
   };
 
   const userName = auth?.user?.name || "";
