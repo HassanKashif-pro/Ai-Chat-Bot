@@ -3,22 +3,34 @@ import { red } from "@mui/material/colors";
 import { useAuth } from "../context/AuthContext";
 import { IoMdSend } from "react-icons/io";
 import { useRef, useState } from "react";
+import { sendChatRequest } from "../helpers/api.communicator";
+import ChatItem from "../components/chat/ChatItem";
 
 type Message = {
   role: "user" | "assistant";
   content: string;
 };
+
 const Chat = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const auth = useAuth();
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
+
   const handleSubmit = async () => {
-    const content = inputRef.current?.value as string;
-    if (inputRef && inputRef.current) {
+    if (inputRef.current) {
+      const content = inputRef.current.value;
       inputRef.current.value = "";
+      const newMessage: Message = { role: "user", content };
+      setChatMessages((prev) => [...prev, newMessage]);
+
+      try {
+        const chatData = await sendChatRequest(content);
+        setChatMessages((prev) => [...prev, ...chatData.chats]);
+      } catch (error) {
+        console.error("Error sending chat request:", error);
+        // Optionally, you can add user feedback here, like setting an error message in the state and displaying it in the UI.
+      }
     }
-    const newMessage: Message = { role: "user", content };
-    setChatMessages((prev) => [...prev, newMessage]);
   };
 
   const userName = auth?.user?.name || "";
@@ -31,13 +43,19 @@ const Chat = () => {
       sx={{
         display: "flex",
         flex: 1,
-        width: "50%",
+        width: "100%",
         height: "100%",
         mt: 3,
         gap: 3,
       }}
     >
-      <Box sx={{ display: { md: "flex", xs: "none", sm: "none" } }}>
+      <Box
+        sx={{
+          display: { md: "flex", xs: "none", sm: "none" },
+          flex: 0.2,
+          flexDirection: "column",
+        }}
+      >
         <Box
           sx={{
             display: "flex",
@@ -61,18 +79,18 @@ const Chat = () => {
             {initials}
           </Avatar>
           <Typography sx={{ mx: "auto", fontFamily: "Work Sans" }}>
-            You Are Talking To A Chat-Bot
+            You are talking to a ChatBOT
           </Typography>
           <Typography sx={{ mx: "auto", fontFamily: "Work Sans", my: 4, p: 3 }}>
-            You can ask anything over here which is related to Knowledge and
-            Education...
+            You can ask some questions related to Knowledge, Business, Advice,
+            Education, etc. But avoid sharing personal information.
           </Typography>
           <Button
             sx={{
-              width: 200,
+              width: "200px",
               my: "auto",
               color: "white",
-              fontWeight: 700,
+              fontWeight: "700",
               borderRadius: 3,
               mx: "auto",
               bgcolor: red[300],
@@ -112,19 +130,16 @@ const Chat = () => {
             mx: "auto",
             display: "flex",
             flexDirection: "column",
-            overflow: "scroll",
-            overflowX: "hidden",
             overflowY: "auto",
             scrollBehavior: "smooth",
           }}
         >
           {chatMessages.map((chat, index) => (
-            //@ts-ignore
             <ChatItem content={chat.content} role={chat.role} key={index} />
           ))}
         </Box>
-        <div
-          style={{
+        <Box
+          sx={{
             width: "100%",
             borderRadius: 8,
             backgroundColor: "rgb(17,27,39)",
@@ -148,7 +163,7 @@ const Chat = () => {
           <IconButton onClick={handleSubmit} sx={{ color: "white", mx: 1 }}>
             <IoMdSend />
           </IconButton>
-        </div>
+        </Box>
       </Box>
     </Box>
   );

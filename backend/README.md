@@ -1,4 +1,3 @@
-
 # MERN Stack AI Chatbot
 
 This is an AI Chatbot application, inspired by ChatGPT, by using MERN Stack and OpenAI
@@ -9,3 +8,6 @@ It's a completely secure application using JWT Tokens, HTTP-Only Cookies, Signed
 
 Contributions are welcome
 
+---
+
+Today was the worst and most messed up problem in my code, it was not just one bug it was a whole bunch of them...I solved most of it with the help of a senior but still iam working on the problem that the chatbot is not responding...
