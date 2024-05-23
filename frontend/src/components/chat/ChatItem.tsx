@@ -1,7 +1,7 @@
 import { Avatar, Box, Typography } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { coldarkCold } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { coldarkDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 function extractCodeFromString(message: string) {
   if (message.includes("```")) {
@@ -33,6 +33,7 @@ const ChatItem = ({
   content: string;
   role: "user" | "assistant";
 }) => {
+  const messageBlocks = extractCodeFromString(content);
   const auth = useAuth();
   const userName = auth?.user?.name || "";
   const userInitials = userName
@@ -45,7 +46,20 @@ const ChatItem = ({
         <img src="openai.png" alt="openai" width="30px" />
       </Avatar>
       <Box>
-        <Typography fontSize="20px">{content}</Typography>
+        {!messageBlocks && (
+          <Typography sx={{ fontSize: "20px" }}>{content}</Typography>
+        )}
+        {messageBlocks &&
+          messageBlocks.length &&
+          messageBlocks.map((block) =>
+            isCodeBlock(block) ? (
+              <SyntaxHighlighter style={coldarkDark} language="javascript">
+                {block}
+              </SyntaxHighlighter>
+            ) : (
+              <Typography sx={{ fontSize: "20px" }}>{block}</Typography>
+            )
+          )}
       </Box>
     </Box>
   ) : (
