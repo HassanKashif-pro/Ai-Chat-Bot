@@ -3,11 +3,12 @@ import CustomizedInput from "../components/shared/CustomizedInput";
 import { SiSimplelogin } from "react-icons/si";
 import { toast } from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const auth = useAuth();
-
+  const navigate = useNavigate();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -25,6 +26,11 @@ const Login = () => {
       console.error(error);
     }
   };
+  useEffect(() => {
+    if (auth?.user) {
+      return navigate("/chat");
+    }
+  }, [auth]);
 
   return (
     <Box width={"100%"} height={"100%"} display="flex" flex={1}>
