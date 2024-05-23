@@ -35,11 +35,11 @@ function Header() {
                 textColor="black"
               />
               <NavigationLink
+                onClick={auth.logout}
                 bg="#51538f"
                 textColor="white"
                 to="/signup"
                 text="signup"
-                onClick={auth.logout}
               />
             </>
           )}

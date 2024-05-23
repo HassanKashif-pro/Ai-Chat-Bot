@@ -5,7 +5,11 @@ import {
   useEffect,
   useState,
 } from "react";
-import { checkAuthStatus, loginUser } from "../helpers/api.communicator";
+import {
+  checkAuthStatus,
+  loginUser,
+  logoutUser,
+} from "../helpers/api.communicator";
 
 type User = {
   name: string;
@@ -47,9 +51,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = async () => {
-    // Implement logout logic here
-    setUser(null);
+    await logoutUser();
     setIsLoggedIn(false);
+    setUser(null);
+    window.location.reload();
   };
 
   const signup = async (name: string, email: string, password: string) => {
