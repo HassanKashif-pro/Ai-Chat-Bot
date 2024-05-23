@@ -9,6 +9,7 @@ import {
   checkAuthStatus,
   loginUser,
   logoutUser,
+  signupUser,
 } from "../helpers/api.communicator";
 
 type User = {
@@ -58,8 +59,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signup = async (name: string, email: string, password: string) => {
-    // Implement signup logic here
-    // You can implement a similar logic as in login, but for signing up
+    const data = await signupUser(name, email, password);
+    if (data) {
+      setUser({ email: data.email, name: data.name });
+      setIsLoggedIn(true);
+    }
   };
 
   const value = {
